@@ -4,14 +4,12 @@ from flask_dance.contrib.facebook import make_facebook_blueprint,facebook
 from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from sqlalchemy.orm.exc import NoResultFound
-from .models import db, User, OAuth,Token
+from src.models.user import OAuth, db, User, Token
 import uuid
-
 
 blueprint = make_facebook_blueprint(
     storage=SQLAlchemyStorage(OAuth, db.session, user=current_user)
 )
-
 
 # create/login local user on successful OAuth login
 @oauth_authorized.connect_via(blueprint)
@@ -29,8 +27,12 @@ def facebook_logged_in(blueprint, token):
     user_id = info["id"]
 
     # Find this OAuth token in the database, or create it
-    query = OAuth.query.filter_by(provider=blueprint.name, provider_user_id=user_id)
+    print(blueprint.name,user_id)
+    p = OAuth.query.filter_by(provider=blueprint.name, provider_user_id=user_id).first()
+    print(p)
 
+    query = OAuth.query.filter_by(provider=blueprint.name, provider_user_id=user_id)
+    print(query)
     try:
         oauth = query.one()
     except NoResultFound:
@@ -42,7 +44,7 @@ def facebook_logged_in(blueprint, token):
 
     else:
         # Create a new local user account for this user
-        user = User(name=info["name"], email =info['email'])
+        user = User(name=info["name"])
         # Associate the new local user account with the OAuth token
         oauth.user = user
         # Save and commit our database models
@@ -60,7 +62,7 @@ def facebook_logged_in(blueprint, token):
         token = Token(user_id=current_user.id, uuid=str(uuid.uuid4().hex))
         db.session.add(token)
         db.session.commit()
-    return redirect("http://localhost:3000/?api_key={}".format(token.uuid))
+    return redirect("https://127.0.0.1:3000/?api_key={}".format(token.uuid))
 
 
 # notify on OAuth provider error
