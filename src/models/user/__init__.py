@@ -13,11 +13,13 @@ class User(UserMixin, db.Model):
     login_name = db.Column(db.String)
     password = db.Column(db.String)
     phone = db.Column(db.Integer, unique=True)
+    email = db.Column(db.String(256), unique=True)
     admin = db.Column(db.Boolean, default=False)
     address = db.Column(db.String)
-    gender = db.Column(db.Boolean)
+    gender = db.Column(db.String)
     name = db.Column(db.String(256))
-    email = db.Column(db.String(256), unique=True)
+    img_url = db.Column(db.String())
+    bought_product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
     orders = db.relationship('Order', backref='user', lazy=True)
 
     def set_password(self, password):
@@ -66,7 +68,6 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     order_item = db.relationship('Order_item', backref='order', lazy = True)
-    Order_status_id = db.Column(db.Integer, db.ForeignKey('order_status_ids.id'))
     ship = db.relationship('Shipment', backref='order', lazy = True)
     invoice = db.relationship('Invoice', backref='order', lazy = True)
 
@@ -75,10 +76,23 @@ class Order_item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    order_status_id = db.Column(db.Integer, db.ForeignKey('order_statuses.id'), default=1)
     quantity = db.Column(db.Integer, nullable=False)
+    total_price = db.Column(db.Integer)
 
-class Order_status_id(db.Model):
-    __tablename__ = 'order_status_ids'
+    def jsonize(self):
+        return {
+            "id" : self.id,
+            "product_id" : self.product_id,
+            "product" : self.product.name,
+            "order_status" : self.status.status,
+            "quantity" : self.quantity,
+            "total_price" : self.total_price,
+            "img_url" : self.product.img_url
+        }
+
+class Order_status(db.Model):
+    __tablename__ = 'order_statuses'
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String)
-    order_id = db.relationship('Order', backref='status', lazy=True)
+    order_id = db.relationship('Order_item', backref='status', lazy=True)

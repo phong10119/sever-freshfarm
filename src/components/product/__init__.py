@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import current_user, login_required
 from src.models.product import Product, Inventory, Inventory_item, Rating, rating_count, Category, Store
-from src.models.user import db
+from src.models.user import db, User
 
 product_blueprint = Blueprint('productbp', __name__)
 
@@ -46,9 +46,9 @@ def get_fruit(category_id):
             'price' : fruit.price,
             'inventory_item_id': fruit.inventory_item_id,
             'category_id' : fruit.category_id,
-            'location' : product.inventory_item.inventory.location,
-            'store' : product.inventory_item.store.name,
-            'stock' : product.inventory_item.stock,
+            'location' : fruit.inventory_item.inventory.location,
+            'store' : fruit.inventory_item.store.name,
+            'stock' : fruit.inventory_item.stock,
             'active' : fruit.active
         }
         fruits_as_dict.append(fruit_as_dict)
@@ -57,7 +57,11 @@ def get_fruit(category_id):
 @product_blueprint.route('/<id>', methods=['POST', 'GET'])
 def product(id):
     product = Product.query.get(id)
-    print(product)
+    buyers = product.buyer
+    buyer_ids = []
+    for buyer in buyers:
+        buyer_ids.append(buyer.id)
+    
     if request.method == 'POST':
         order = Order.query.filter_by(user_id=current_user.id)
         new_order_item = Order_item(order_id=order.id, product_id=id, quantity=request.form['quantity'])
@@ -77,5 +81,41 @@ def product(id):
             'location' : product.inventory_item.inventory.location,
             'store' : product.inventory_item.store.name,
             'stock' : product.inventory_item.stock,
+            'buyer_ids': buyer_ids,
             'active' : product.active
         })
+
+@product_blueprint.route('/<id>/rating', methods=['POST', 'GET'])
+def rating(id):
+    # import code; code.interact(local=dict(globals(), **locals()))
+
+    ratings = Rating.query.filter_by(product_id=id).all()
+    ratings_as_dict = []
+
+    for rating in ratings:
+        user_cmt = User.query.get(rating.user_id)
+        rating_as_dict = {
+            "id" : rating.id,
+            "rating" : rating.rating,
+            "comment" : rating.comment,
+            "user_id" : rating.user_id,
+            "user_name" : user_cmt.login_name,
+            "user_avata" : user_cmt.img_url,
+            "product_id" : rating.product_id
+        }
+        ratings_as_dict.append(rating_as_dict)
+    if request.method == 'POST':
+        rating = Rating.query.filter_by(
+            user_id = current_user.id,
+            product_id = id
+        ).first()
+        if rating:
+            rating.comment = request.get_json(force=True)['userComment']
+            rating.rating = request.get_json(force=True)['userRating']
+            db.session.commit()
+        new_rating = Rating(rating = request.get_json(force=True)['userRating'], comment = request.get_json(force=True)['userComment'], user_id=current_user.id, product_id=id)
+        db.session.add(new_rating)
+        db.session.commit()
+        return jsonify({'state': 'success'})
+    return jsonify(ratings_as_dict)
+    

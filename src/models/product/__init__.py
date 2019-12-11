@@ -11,6 +11,7 @@ class Product(db.Model):
     price = db.Column(db.Integer)
     unit = db.Column(db.String)
     order_item = db.relationship('Order_item', backref='product', lazy=True)
+    buyer = db.relationship('User', backref='product', lazy=True)
     rating = db.relationship('Rating', secondary='rating_count', backref='product', lazy=True)
     inventory_item_id = db.Column(db.Integer, db.ForeignKey('inventory_items.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))

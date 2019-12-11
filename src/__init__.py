@@ -7,8 +7,8 @@ from .cli import create_db
 from flask_cors import CORS
 from flask_migrate import Migrate
 
-
 app = Flask(__name__)
+
 app.config.from_object(Config)
 app.register_blueprint(blueprint, url_prefix="/login")
 CORS(app)
