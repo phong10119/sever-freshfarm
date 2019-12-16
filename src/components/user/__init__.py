@@ -29,7 +29,7 @@ def logout():
     logout_user()
     flash("You have logged out")
     return jsonify({'success': "true"})
-    # return redirect("https://127.0.0.1:3000/")
+    # return redirect("https://freshfarm-ecomerce.netlify.com/")
 
 @user_blueprint.route("/get_user")
 def get_user():
