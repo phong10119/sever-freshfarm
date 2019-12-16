@@ -3,9 +3,7 @@ from flask_login import LoginManager, UserMixin
 from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 db = SQLAlchemy()
-
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -14,12 +12,13 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String)
     phone = db.Column(db.Integer, unique=True)
     email = db.Column(db.String(256), unique=True)
-    admin = db.Column(db.Boolean, default=False)
     address = db.Column(db.String)
     gender = db.Column(db.String)
     name = db.Column(db.String(256))
     img_url = db.Column(db.String())
-    bought_product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
+    store = db.Column(db.Boolean, default=False)
+    store_name = db.Column(db.String)
+    product_own = db.relationship('Product', backref='user', lazy=True)
     orders = db.relationship('Order', backref='user', lazy=True)
 
     def set_password(self, password):
@@ -28,6 +27,19 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+    def jsonize(self):
+        return {
+            "id" : self.id,
+            "login_name": self.login_name,
+            "phone": self.phone,
+            "email": self.email,
+            "address": self.address,
+            "gender": self.gender,
+            "name": self.name,
+            "img_url": self.img_url,
+            "store": self.store,
+            "store_name": self.store_name,
+        }
 
 class OAuth(OAuthConsumerMixin, db.Model):
     provider_user_id = db.Column(db.String(256), unique=True, nullable=False)
@@ -74,15 +86,18 @@ class Order(db.Model):
 class Order_item(db.Model):
     __tablename__ = 'order_items'
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
-    order_status_id = db.Column(db.Integer, db.ForeignKey('order_statuses.id'), default=1)
     quantity = db.Column(db.Integer, nullable=False)
     total_price = db.Column(db.Integer)
+    date_of_sell = db.Column(db.Date)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    order_status_id = db.Column(db.Integer, db.ForeignKey('order_statuses.id'), default=5)
+
 
     def jsonize(self):
         return {
             "id" : self.id,
+            "user_id" : self.order.user_id,
             "product_id" : self.product_id,
             "product" : self.product.name,
             "order_status" : self.status.status,

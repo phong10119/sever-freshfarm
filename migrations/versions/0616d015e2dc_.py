@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 6a7ed58dac49
+Revision ID: 0616d015e2dc
 Revises: 
-Create Date: 2019-12-10 22:01:54.839082
+Create Date: 2019-12-15 13:07:18.639256
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa, sqlalchemy_utils
 
 
 # revision identifiers, used by Alembic.
-revision = '6a7ed58dac49'
+revision = '0616d015e2dc'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,51 +44,18 @@ def upgrade():
     sa.Column('body', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('stores',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('login_name', sa.String(), nullable=True),
-    sa.Column('password', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('inventory_items',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('inventory_id', sa.Integer(), nullable=True),
-    sa.Column('store_id', sa.Integer(), nullable=True),
-    sa.Column('stock', sa.Integer(), nullable=True),
-    sa.Column('time', sa.Date(), nullable=True),
-    sa.Column('expired_date', sa.Date(), nullable=True),
-    sa.ForeignKeyConstraint(['inventory_id'], ['inventories.id'], ),
-    sa.ForeignKeyConstraint(['store_id'], ['stores.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('products',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('discription', sa.String(), nullable=True),
-    sa.Column('img_url', sa.String(), nullable=True),
-    sa.Column('price', sa.Integer(), nullable=True),
-    sa.Column('unit', sa.String(), nullable=True),
-    sa.Column('inventory_item_id', sa.Integer(), nullable=True),
-    sa.Column('category_id', sa.Integer(), nullable=True),
-    sa.Column('active', sa.Boolean(), nullable=True),
-    sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
-    sa.ForeignKeyConstraint(['inventory_item_id'], ['inventory_items.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('login_name', sa.String(), nullable=True),
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('phone', sa.Integer(), nullable=True),
     sa.Column('email', sa.String(length=256), nullable=True),
-    sa.Column('admin', sa.Boolean(), nullable=True),
     sa.Column('address', sa.String(), nullable=True),
     sa.Column('gender', sa.String(), nullable=True),
     sa.Column('name', sa.String(length=256), nullable=True),
     sa.Column('img_url', sa.String(), nullable=True),
-    sa.Column('bought_product_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['bought_product_id'], ['products.id'], ),
+    sa.Column('store', sa.Boolean(), nullable=True),
+    sa.Column('store_name', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('phone')
@@ -110,14 +77,23 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('ratings',
+    op.create_table('products',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('rating', sa.Integer(), nullable=True),
-    sa.Column('comment', sa.Text(), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('product_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('discription', sa.String(), nullable=True),
+    sa.Column('img_url', sa.String(), nullable=True),
+    sa.Column('price', sa.Integer(), nullable=True),
+    sa.Column('unit', sa.String(), nullable=True),
+    sa.Column('active', sa.Boolean(), nullable=True),
+    sa.Column('stock', sa.Integer(), nullable=True),
+    sa.Column('time', sa.Date(), nullable=True),
+    sa.Column('expired_date', sa.Date(), nullable=True),
+    sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('inventory_id', sa.Integer(), nullable=True),
+    sa.Column('user_owner_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
+    sa.ForeignKeyConstraint(['inventory_id'], ['inventories.id'], ),
+    sa.ForeignKeyConstraint(['user_owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('token',
@@ -150,6 +126,16 @@ def upgrade():
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('ratings',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('rating', sa.Integer(), nullable=True),
+    sa.Column('comment', sa.Text(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('rating_count',
     sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('rating_id', sa.Integer(), nullable=False),
@@ -172,16 +158,14 @@ def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table('shipments')
     op.drop_table('rating_count')
+    op.drop_table('ratings')
     op.drop_table('order_items')
     op.drop_table('invoices')
     op.drop_table('token')
-    op.drop_table('ratings')
+    op.drop_table('products')
     op.drop_table('orders')
     op.drop_table('flask_dance_oauth')
     op.drop_table('users')
-    op.drop_table('products')
-    op.drop_table('inventory_items')
-    op.drop_table('stores')
     op.drop_table('payments')
     op.drop_table('order_statuses')
     op.drop_table('invoice_statuses')

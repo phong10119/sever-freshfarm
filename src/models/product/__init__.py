@@ -10,27 +10,37 @@ class Product(db.Model):
     img_url = db.Column(db.String)
     price = db.Column(db.Integer)
     unit = db.Column(db.String)
-    order_item = db.relationship('Order_item', backref='product', lazy=True)
-    buyer = db.relationship('User', backref='product', lazy=True)
-    rating = db.relationship('Rating', secondary='rating_count', backref='product', lazy=True)
-    inventory_item_id = db.Column(db.Integer, db.ForeignKey('inventory_items.id'))
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     active = db.Column(db.Boolean, default=True)
-
-class Inventory_item(db.Model):
-    __tablename__ = 'inventory_items'
-    id = db.Column(db.Integer, primary_key=True)
-    product = db.relationship('Product', backref='inventory_item', lazy=True)
-    inventory_id = db.Column(db.Integer, db.ForeignKey('inventories.id'))
-    store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
     stock = db.Column(db.Integer)
     time = db.Column(db.Date)
     expired_date = db.Column(db.Date)
+
+    rating = db.relationship('Rating', backref='product', lazy=True)
+    order_item = db.relationship('Order_item', backref='product', lazy=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+    inventory_id = db.Column(db.Integer, db.ForeignKey('inventories.id'))
+    user_owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
+    def jsonize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "discription": self.discription,
+            "img_url": self.img_url,
+            "price": self.price,
+            "active": self.active,
+            "stock": self.stock,
+            "time": self.time,
+            "expired_date": self.expired_date,
+            "category_id": self.category_id,
+            "inventory": self.inventory.location,
+            "store_name": self.user.store_name,
+            "user_owner_id": self.user_owner_id
+        }
 class Inventory(db.Model):
     __tablename__ = 'inventories'
     id = db.Column(db.Integer, primary_key=True)
-    inventory_item = db.relationship('Inventory_item', backref='inventory', lazy=True)
+    product = db.relationship('Product', backref='inventory', lazy=True)
     location = db.Column(db.String, unique=True) 
     
 class Rating(db.Model):
@@ -41,27 +51,9 @@ class Rating(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
 
-rating_count = db.Table('rating_count',
-    db.Column('product_id', db.Integer, db.ForeignKey('products.id'), primary_key=True),
-    db.Column('rating_id', db.Integer, db.ForeignKey('ratings.id'), primary_key=True)
- )
-
 class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String)
     product = db.relationship('Product', backref='category', lazy=True)
 
-class Store(db.Model):
-    __tablename__ = 'stores'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    inventory_item = db.relationship('Inventory_item', backref='store', lazy=True)
-    login_name = db.Column(db.String)
-    password = db.Column(db.String)
-    
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)

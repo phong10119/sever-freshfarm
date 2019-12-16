@@ -1,5 +1,5 @@
 from src.models.user import db, User, OAuth, Token, Order, Order_item, Order_status
-from src.models.product import Product, Inventory, Inventory_item, Rating, rating_count, Category, Store
+from src.models.product import Product, Inventory, Rating, Category
 from src.models.trading import Shipment, Invoice, Invoice_status, Payment
 import random
 
@@ -12,509 +12,6 @@ categories = [
 ]
 
 inventories = ['District 7', 'Thu Duc district']
-
-i_i = [
-    {
-        "stock": 62,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/17"
-    },
-    {
-        "stock": 57,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/15"
-    },
-    {
-        "stock": 64,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/17"
-    },
-    {
-        "stock": 70,
-        "time": "2019/12/15",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 52,
-        "time": "2019/12/21",
-        "expired_date": "2020/01/05"
-    },
-    {
-        "stock": 89,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 76,
-        "time": "2019/12/30",
-        "expired_date": "2020/01/05"
-    },
-    {
-        "stock": 92,
-        "time": "2019/12/19",
-        "expired_date": "2020/01/12"
-    },
-    {
-        "stock": 82,
-        "time": "2019/12/22",
-        "expired_date": "2020/01/11"
-    },
-    {
-        "stock": 55,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/20"
-    },
-    {
-        "stock": 62,
-        "time": "2019/12/23",
-        "expired_date": "2020/01/13"
-    },
-    {
-        "stock": 58,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/06"
-    },
-    {
-        "stock": 60,
-        "time": "2019/12/16",
-        "expired_date": "2020/01/17"
-    },
-    {
-        "stock": 90,
-        "time": "2019/12/21",
-        "expired_date": "2020/01/15"
-    },
-    {
-        "stock": 68,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/13"
-    },
-    {
-        "stock": 54,
-        "time": "2019/12/20",
-        "expired_date": "2020/01/20"
-    },
-    {
-        "stock": 68,
-        "time": "2019/12/30",
-        "expired_date": "2020/01/05"
-    },
-    {
-        "stock": 60,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/10"
-    },
-    {
-        "stock": 70,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/08"
-    },
-    {
-        "stock": 75,
-        "time": "2019/12/29",
-        "expired_date": "2020/01/13"
-    },
-    {
-        "stock": 79,
-        "time": "2019/12/20",
-        "expired_date": "2020/01/12"
-    },
-    {
-        "stock": 81,
-        "time": "2019/12/23",
-        "expired_date": "2020/01/06"
-    },
-    {
-        "stock": 55,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/11"
-    },
-    {
-        "stock": 63,
-        "time": "2019/12/19",
-        "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 71,
-        "time": "2019/12/27",
-        "expired_date": "2020/01/20"
-    },
-    {
-        "stock": 64,
-        "time": "2019/12/27",
-        "expired_date": "2020/01/06"
-    },
-    {
-        "stock": 88,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 59,
-        "time": "2019/12/24",
-        "expired_date": "2020/01/08"
-    },
-    {
-        "stock": 59,
-        "time": "2019/12/21",
-        "expired_date": "2020/01/15"
-    },
-    {
-        "stock": 78,
-        "time": "2019/12/25",
-        "expired_date": "2020/01/13"
-    },
-    {
-        "stock": 75,
-        "time": "2019/12/29",
-        "expired_date": "2020/01/15"
-    },
-    {
-        "stock": 88,
-        "time": "2019/12/16",
-        "expired_date": "2020/01/07"
-    },
-    {
-        "stock": 95,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/10"
-    },
-    {
-        "stock": 93,
-        "time": "2019/12/29",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 83,
-        "time": "2019/12/26",
-        "expired_date": "2020/01/16"
-    },
-    {
-        "stock": 75,
-        "time": "2019/12/24",
-        "expired_date": "2020/01/17"
-    },
-    {
-        "stock": 64,
-        "time": "2019/12/19",
-        "expired_date": "2020/01/17"
-    },
-    {
-        "stock": 74,
-        "time": "2019/12/23",
-        "expired_date": "2020/01/17"
-    },
-    {
-        "stock": 86,
-        "time": "2019/12/27",
-        "expired_date": "2020/01/12"
-    },
-    {
-        "stock": 68,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 60,
-        "time": "2019/12/17",
-        "expired_date": "2020/01/12"
-    },
-    {
-        "stock": 86,
-        "time": "2019/12/24",
-        "expired_date": "2020/01/08"
-    },
-    {
-        "stock": 73,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/05"
-    },
-    {
-        "stock": 70,
-        "time": "2019/12/26",
-        "expired_date": "2020/01/14"
-    },
-    {
-        "stock": 80,
-        "time": "2019/12/16",
-        "expired_date": "2020/01/13"
-    },
-    {
-        "stock": 77,
-        "time": "2019/12/27",
-        "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 100,
-        "time": "2019/12/17",
-        "expired_date": "2020/01/13"
-    },
-    {
-        "stock": 85,
-        "time": "2019/12/17",
-        "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 69,
-        "time": "2019/12/21",
-        "expired_date": "2020/01/07"
-    },
-    {
-        "stock": 67,
-        "time": "2019/12/21",
-        "expired_date": "2020/01/10"
-    },
-    {
-        "stock": 75,
-        "time": "2019/12/25",
-        "expired_date": "2020/01/05"
-    },
-    {
-        "stock": 50,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/19"
-    },
-    {
-        "stock": 65,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/06"
-    },
-    {
-        "stock": 84,
-        "time": "2019/12/24",
-        "expired_date": "2020/01/17"
-    },
-    {
-        "stock": 91,
-        "time": "2019/12/19",
-        "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 67,
-        "time": "2019/12/15",
-        "expired_date": "2020/01/20"
-    },
-    {
-        "stock": 78,
-        "time": "2019/12/19",
-        "expired_date": "2020/01/15"
-    },
-    {
-        "stock": 94,
-        "time": "2019/12/26",
-        "expired_date": "2020/01/13"
-    },
-    {
-        "stock": 55,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/14"
-    },
-    {
-        "stock": 94,
-        "time": "2019/12/30",
-        "expired_date": "2020/01/19"
-    },
-    {
-        "stock": 94,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/11"
-    },
-    {
-        "stock": 73,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/17"
-    },
-    {
-        "stock": 71,
-        "time": "2019/12/27",
-        "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 81,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/12"
-    },
-    {
-        "stock": 54,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/15"
-    },
-    {
-        "stock": 100,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 64,
-        "time": "2019/12/15",
-        "expired_date": "2020/01/16"
-    },
-    {
-        "stock": 70,
-        "time": "2019/12/16",
-        "expired_date": "2020/01/08"
-    },
-    {
-        "stock": 78,
-        "time": "2019/12/24",
-        "expired_date": "2020/01/13"
-    },
-    {
-        "stock": 78,
-        "time": "2019/12/24",
-        "expired_date": "2020/01/05"
-    },
-    {
-        "stock": 88,
-        "time": "2019/12/26",
-        "expired_date": "2020/01/16"
-    },
-    {
-        "stock": 52,
-        "time": "2019/12/31",
-        "expired_date": "2020/01/16"
-    },
-    {
-        "stock": 83,
-        "time": "2019/12/23",
-        "expired_date": "2020/01/08"
-    },
-    {
-        "stock": 91,
-        "time": "2019/12/27",
-        "expired_date": "2020/01/10"
-    },
-    {
-        "stock": 57,
-        "time": "2019/12/30",
-        "expired_date": "2020/01/10"
-    },
-    {
-        "stock": 50,
-        "time": "2019/12/15",
-        "expired_date": "2020/01/11"
-    },
-    {
-        "stock": 50,
-        "time": "2019/12/25",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 65,
-        "time": "2019/12/23",
-        "expired_date": "2020/01/16"
-    },
-    {
-        "stock": 51,
-        "time": "2019/12/26",
-        "expired_date": "2020/01/14"
-    },
-    {
-        "stock": 71,
-        "time": "2019/12/20",
-        "expired_date": "2020/01/08"
-    },
-    {
-        "stock": 64,
-        "time": "2019/12/17",
-        "expired_date": "2020/01/11"
-    },
-    {
-        "stock": 83,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 83,
-        "time": "2019/12/21",
-        "expired_date": "2020/01/06"
-    },
-    {
-        "stock": 93,
-        "time": "2019/12/29",
-        "expired_date": "2020/01/19"
-    },
-    {
-        "stock": 57,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 93,
-        "time": "2019/12/24",
-        "expired_date": "2020/01/16"
-    },
-    {
-        "stock": 64,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/07"
-    },
-    {
-        "stock": 88,
-        "time": "2019/12/17",
-        "expired_date": "2020/01/20"
-    },
-    {
-        "stock": 52,
-        "time": "2019/12/27",
-        "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 79,
-        "time": "2019/12/20",
-        "expired_date": "2020/01/08"
-    },
-    {
-        "stock": 70,
-        "time": "2019/12/18",
-        "expired_date": "2020/01/09"
-    },
-    {
-        "stock": 73,
-        "time": "2019/12/15",
-        "expired_date": "2020/01/06"
-    },
-    {
-        "stock": 83,
-        "time": "2019/12/28",
-        "expired_date": "2020/01/19"
-    },
-    {
-        "stock": 95,
-        "time": "2019/12/26",
-        "expired_date": "2020/01/14"
-    },
-    {
-        "stock": 63,
-        "time": "2019/12/24",
-                "expired_date": "2020/01/11"
-    },
-    {
-        "stock": 55,
-        "time": "2019/12/21",
-                "expired_date": "2020/01/14"
-    },
-    {
-        "stock": 73,
-        "time": "2019/12/23",
-                "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 75,
-        "time": "2019/12/22",
-                "expired_date": "2020/01/10"
-    },
-    {
-        "stock": 91,
-        "time": "2019/12/20",
-                "expired_date": "2020/01/18"
-    },
-    {
-        "stock": 100,
-        "time": "2019/12/25",
-                "expired_date": "2020/01/16"
-    }
-]
 
 fruit_product = [['Apple', 'https://www.walmart.ca/en/ip/apple-gala/6000195494284', 'gam'], ['Avocado', 'https://images.eatsmarter.de/sites/default/files/styles/576x432/public/avocado-fotolia-600x450.jpg', 'gam'], ['Banana', 'http://buyfv.com/wp-content/uploads/2019/01/10000025-2_3-fresho-banana-robusta.jpg', 'gam'], ['Coconut', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVMEklVSrhnZTPMcMz8t4d5x-NGLFDBZ703bFG6r_sDKntyn9w&s', 'unit'], ['Grape', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROfRR0dudAEg7DFfMoRQom_kXXrrTsw8FgWVHbhKR60Nf2oMAUiw&s', 'gam'], ['Mango', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSz6jtchGZGiR38Cj8FdzywopoMSiyo7gJON8J2FmYdxTsrUEbb&s', 'gam'],
                  ['Orange', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToBnHvC2lea0nC8LecgwotZiI7RhCFJsTv0JKPttLzLQvFdFF7&s', 'gam'], ['Dragon fruit', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFxguw9NULcOIKmSUUMP4a9uQos0xmanvo4QPI2BRb3YdfMJ8nZQ&s', 'gam'], ['Watermelon', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkL4UyUjb81Ecw4Z1SDA-JFV9oe2zgxlv4_99VBERkvWichiUz&s', 'gam'], ['Pineaple', 'https://i5.walmartimages.com/asr/dd2a5d3c-d358-4579-8ece-59ce1804ab5b_9.0b874251fccc645fd98ac76e797c2d2a.jpeg?odnWidth=450&odnHeight=450&odnBg=ffffff', 'gam'], ['Papayya', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaqNWeGRhl-m7m0KmYxmOxncf3lWA8tNe2Tzd-o_zBXn4PxsaCAA&s', 'gam']]
@@ -558,40 +55,71 @@ product_description = [
     }
 ]
 
-store_name = [
+order_status = ['Proceeding', 'Delivering', 'Delivered', 'Canceled', 'In cart']
+
+stores = [
     {
-        "name": "Mynte"
-    },
-    {
-        "name": "Quimba"
-    },
-    {
-        "name": "Jayo"
-    },
-    {
-        "name": "Meezzy"
-    },
-    {
-        "name": "Jazzy"
-    },
-    {
-        "name": "Rhyloo"
-    },
-    {
-        "name": "Yombu"
-    },
-    {
-        "name": "Eazzy"
-    },
-    {
-        "name": "Realblab"
-    },
-    {
-        "name": "Ozu"
+        "id": 1,
+        "login_name": "Markus",
+        "password": "1234",
+        "img_url": "https://robohash.org/etnesciuntiste.jpg?size=100x100&set=set1",
+        "store_name": "Janyx"
+    }, {
+        "id": 2,
+        "login_name": "Corabelle",
+        "password": "1234",
+        "img_url": "https://robohash.org/asperioresinaliquam.bmp?size=100x100&set=set1",
+        "store_name": "Eamia"
+    }, {
+        "id": 3,
+        "login_name": "Drusie",
+        "password": "1234",
+        "img_url": "https://robohash.org/nonsitdolor.png?size=100x100&set=set1",
+        "store_name": "BlogXS"
+    }, {
+        "id": 4,
+        "login_name": "Maximilian",
+        "password": "1234",
+        "img_url": "https://robohash.org/voluptasnonvero.png?size=100x100&set=set1",
+        "store_name": "Meedoo"
+    }, {
+        "id": 5,
+        "login_name": "Drugi",
+        "password": "1234",
+        "img_url": "https://robohash.org/eligendiautdeserunt.jpg?size=100x100&set=set1",
+        "store_name": "Dynabox"
+    }, {
+        "id": 6,
+        "login_name": "Ilene",
+        "password": "1234",
+        "img_url": "https://robohash.org/vellaboreet.bmp?size=100x100&set=set1",
+        "store_name": "Photofeed"
+    }, {
+        "id": 7,
+        "login_name": "Illa",
+        "password": "1234",
+        "img_url": "https://robohash.org/laboriosamvelitanimi.jpg?size=100x100&set=set1",
+        "store_name": "Jatri"
+    }, {
+        "id": 8,
+        "login_name": "Essy",
+        "password": "1234",
+        "img_url": "https://robohash.org/repudiandaeconsequaturqui.png?size=100x100&set=set1",
+        "store_name": "Zoozzy"
+    }, {
+        "id": 9,
+        "login_name": "Stinky",
+        "password": "1234",
+        "img_url": "https://robohash.org/quoquodquam.bmp?size=100x100&set=set1",
+        "store_name": "Skaboo"
+    }, {
+        "id": 10,
+        "login_name": "Jackie",
+        "password": 12340,
+        "img_url": "https://robohash.org/quiinharum.bmp?size=100x100&set=set1",
+        "store_name": "Zoozzy"
     }
 ]
-
-order_status = ['In cart', 'Delivering', 'Delivered', 'Canceled']
 
 users = [
     {"id":1,"login_name":"Piegrome","img_url":"https://robohash.org/namametincidunt.png?size=200x200&set=set1"},
@@ -1100,32 +628,37 @@ ratings = [
 
 @fakedata_blueprint.route('/')
 def craete_fake_date():
-    for el in categories:
-        new_cate = Category(body=el)
-        db.session.add(new_cate)
-        db.session.commit()
+    # for el in categories:
+    #     new_cate = Category(body=el)
+    #     db.session.add(new_cate)
+    #     db.session.commit()
 
-    for el in inventories:
-        new_i = Inventory(location=el)
-        db.session.add(new_i)
-        db.session.commit()
+    # for el in inventories:
+    #     new_i = Inventory(location=el)
+    #     db.session.add(new_i)
+    #     db.session.commit()
 
-    for store in store_name:
-        new_store = Store(name=store['name'])
-        db.session.add(new_store)
-        db.session.commit()
+    # for el in order_status:
+    #     new_os = Order_status(status=el)
+    #     db.session.add(new_os)
+    #     db.session.commit()
 
-    for el in i_i:
-        new_II = Inventory_item(inventory_id=random.randint(
-            1, 2), store_id=random.randint(1, 10), stock=el['stock'], time=el['time'], expired_date=el['expired_date'])
-        db.session.add(new_II)
-        db.session.commit()
+    # for store in stores:
+    #     new_store = User(login_name=store['login_name'], img_url=store['img_url'],store=True, store_name=store['store_name'])
+    #     new_store.set_password(store['password'])
+    #     db.session.add(new_store)
+    #     db.session.commit()
 
+    for user in users:
+        new_user = User(login_name=user['login_name'], img_url=user['img_url'])
+        db.session.add(new_user)
+        db.session.commit()
+    
     for x in range(0, 30):
         ran = random.randint(0, 10)
         ran_price = random.randint(1, 5)*1000
         new_product = Product(name=fruit_product[ran][0], discription=product_description[random.randint(
-            0, 9)]['name'], img_url=fruit_product[ran][1], price=ran_price, inventory_item_id=random.randint(1, 99), category_id=1)
+            0, 9)]['name'], img_url=fruit_product[ran][1], price=ran_price, category_id=1, user_owner_id=random.randint(1,9), stock=random.randint(100,200), time="2019/12/15", expired_date="2020/01/10", inventory_id=random.randint(1,2))
         db.session.add(new_product)
         db.session.commit()
 
@@ -1133,7 +666,7 @@ def craete_fake_date():
         ran = random.randint(0, 7)
         ran_price = random.randint(1, 5)*1000
         new_product = Product(name=vegetable_product[ran][0], discription=product_description[random.randint(
-            0, 9)]['name'], img_url=vegetable_product[ran][1], price=ran_price, inventory_item_id=random.randint(1, 99), category_id=2)
+            0, 9)]['name'], img_url=vegetable_product[ran][1], price=ran_price, category_id=2, user_owner_id=random.randint(1,9), stock=random.randint(100,200), time="2019/12/15", expired_date="2020/01/10", inventory_id=random.randint(1,2))
         db.session.add(new_product)
         db.session.commit()
 
@@ -1141,18 +674,8 @@ def craete_fake_date():
         ran = random.randint(0, 4)
         ran_price = random.randint(1, 5)*1000
         new_product = Product(name=seasoning_product[ran][0], discription=product_description[random.randint(
-            0, 9)]['name'], img_url=seasoning_product[ran][1], price=ran_price, inventory_item_id=random.randint(1, 99), category_id=3)
+            0, 9)]['name'], img_url=seasoning_product[ran][1], price=ran_price, category_id=3, user_owner_id=random.randint(1,9), stock=random.randint(100,200), time="2019/12/15", expired_date="2020/01/10", inventory_id=random.randint(1,2))
         db.session.add(new_product)
-        db.session.commit()
-
-    for el in order_status:
-        new_os = Order_status(status=el)
-        db.session.add(new_os)
-        db.session.commit()
-
-    for user in users:
-        new_user = User(login_name=user['login_name'], img_url=user['img_url'])
-        db.session.add(new_user)
         db.session.commit()
 
     for rating in ratings:

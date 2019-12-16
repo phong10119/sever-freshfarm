@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import current_user, login_required, logout_user, login_user
 from src.models.user import db, User, OAuth, Token, Order, Order_item, Order_status
-from src.models.product import Product, Inventory, Inventory_item, Rating, rating_count, Category, Store
+from src.models.product import Product, Inventory, Rating, Category
 from src.models.trading import Shipment, Invoice, Invoice_status, Payment
 import uuid
+from datetime import date
 
 import os
 from dotenv import load_dotenv
@@ -33,15 +34,7 @@ def logout():
 @user_blueprint.route("/get_user")
 def get_user():
     if current_user.is_authenticated:
-        return jsonify({
-            "id" : current_user.id,
-            "login-name" : current_user.login_name,
-            "name": current_user.name,
-            "phone" : current_user.phone,
-            "email" : current_user.email,
-            "address" : current_user.address,
-            "gender" : current_user.gender
-        })
+        return jsonify(current_user.jsonize())
     return jsonify({'id': 'Anomynous'})
 
 @user_blueprint.route('/register', methods=['POST', 'OPTIONS'])
@@ -67,23 +60,14 @@ def login():
             if check_user.check_password(request.get_json(force=True)['password']):
                 token = Token.query.filter_by(user_id = check_user.id).first()
                 if not token:
-                    token = Token(user_id= check_user.id, uuid=str(uuid.uuid4().hex))
-                    db.session.add(token)
+                    new_token = Token(user_id= check_user.id, uuid=str(uuid.uuid4().hex))
+                    db.session.add(new_token)
                     db.session.commit()
+                    token =  new_token
                     print('token', token)
                 print('token', token)
                 login_user(check_user)
-                return jsonify({
-                    "id" : current_user.id,
-                    "login_name" : current_user.login_name,
-                    "name": current_user.name,
-                    "phone" : current_user.phone,
-                    "email" : current_user.email,
-                    "address" : current_user.address,
-                    "gender" : current_user.gender,
-                    "token" : token.uuid,
-                    "state" : "success"
-                })
+                return jsonify({"currentUser": check_user.jsonize(), "state": "success", "token": token.uuid})
             print('wrong password')
             return jsonify({"state": "WrongPass"})
         print('no user')
@@ -116,6 +100,7 @@ def get_order():
 @user_blueprint.route('/create_order_item', methods=['POST'])
 @login_required
 def create_order_item():
+    # import code; code.interact(local=dict(globals(), **locals()))
     order = Order.query.filter_by(user_id=current_user.id).first()
     if not order:
         new_order = Order(user_id = current_user.id)
@@ -125,12 +110,13 @@ def create_order_item():
     order_item = Order_item.query.filter_by(
         product_id=request.get_json(force=True)['product_id'],
         order_id=order.id,
-        order_status_id=1
+        order_status_id=5
         ).first()
     if not order_item:
         new_order_item = Order_item(order_id=order.id, product_id=request.get_json(force=True)['product_id'], quantity=request.get_json(force=True)['quantity'], total_price=request.get_json(force=True)['total_price'])
         db.session.add(new_order_item)
         db.session.commit()
+        order_item=new_order_item
     order_item.quantity=request.get_json(force=True)['quantity']
     order_item.total_price=request.get_json(force=True)['total_price']
     db.session.commit()
@@ -145,6 +131,20 @@ def delete_order_item(id):
     db.session.commit()
     return jsonify({'state': 'deleted'})
 
+@user_blueprint.route('store/product', methods=['GET', 'POST'])
+@login_required
+def store_product():
+    print(current_user.id)
+    products = Product.query.filter_by(user_owner_id=current_user.id, active=True).all()
+
+    return jsonify({"product":[product.jsonize() for product in products]}) 
+
+@user_blueprint.route('/store/product/<id>', methods=['DELETE'])
+@login_required
+def delete_store_product(id):
+    Product.query.filter_by(id=id).delete()
+    db.session.commit()
+    return jsonify({'state': 'deleted'})
 
 @user_blueprint.route('/charge', methods=["POST"])
 def charge():
@@ -169,9 +169,10 @@ def charge():
     order = Order.query.filter_by(user_id=current_user.id).first()
     order_items = Order_item.query.filter_by(
         order_id=order.id,
-        order_status_id=1
+        order_status_id=5
         ).all()
     for order_item in order_items:
-        order_item.order_status_id = 2
+        order_item.order_status_id = 1
+        order_item.date_of_sell = date.today().strftime("%Y/%m/%d")
         db.session.commit()
     return jsonify({"order_items":[order_item.jsonize() for order_item in order_items]}) 
