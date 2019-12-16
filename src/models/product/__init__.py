@@ -54,6 +54,6 @@ class Rating(db.Model):
 class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String)
+    body = db.Column(db.String, unique=True)
     product = db.relationship('Product', backref='category', lazy=True)
 
