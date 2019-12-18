@@ -114,6 +114,7 @@ def edit_product(id):
 @login_required
 def get_sale():
     products = Product.query.filter_by(user_owner_id=current_user.id).all()
+    print(products)
     result = []
     for product in products:
         record = Order_item.query.with_entities(func.sum(Order_item.total_price).label("total_price"), func.count(Order_item.total_price).label("count"), Order_item.date_of_sell).filter_by(product_id=product.id, order_status_id=1).group_by(Order_item.date_of_sell).all()

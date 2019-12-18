@@ -50,6 +50,7 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             return jsonify({"state": "success"})
+        return jsonify({"state": "user already exist"})
     return jsonify({"state": "fail"})
 
 @user_blueprint.route('/login', methods=['OPTIONS', 'POST'])
@@ -172,6 +173,7 @@ def charge():
         order_status_id=5
         ).all()
     for order_item in order_items:
+        product = Product.query.filter_by(id=order_item.product_id)
         order_item.order_status_id = 1
         order_item.date_of_sell = date.today().strftime("%Y/%m/%d")
         db.session.commit()
